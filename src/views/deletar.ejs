@@ -1,0 +1,8 @@
+<% layout('layout') %>
+<h2>Deletar Jogo</h2>
+<p>Tem certeza que deseja excluir "<strong><%= jogo.titulo %></strong>"?</p>
+
+<form action="/jogos/delete/<%= jogo._id %>" method="POST">
+    <button type="submit">Sim, deletar</button>
+    <a href="/">Cancelar</a>
+</form>

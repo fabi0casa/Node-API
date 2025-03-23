@@ -1,0 +1,20 @@
+<% layout('layout') %>
+<h2>Editar Jogo</h2>
+<form action="/jogos/update/<%= jogo._id %>" method="POST">
+    <label for="titulo">Título:</label>
+    <input type="text" name="titulo" value="<%= jogo.titulo %>" required>
+
+    <label for="descricao">Descrição:</label>
+    <textarea name="descricao"><%= jogo.descricao %></textarea>
+
+    <label for="preco">Preço:</label>
+    <input type="number" name="preco" value="<%= jogo.preco %>" step="0.01" required>
+
+    <label for="estoque">Estoque:</label>
+    <input type="number" name="estoque" value="<%= jogo.estoque %>" required>
+
+    <label for="imagem">URL da Imagem:</label>
+    <input type="text" name="imagem" value="<%= jogo.imagem %>">
+
+    <button type="submit">Atualizar</button>
+</form>
