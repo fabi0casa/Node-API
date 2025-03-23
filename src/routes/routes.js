@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const jogoController = require("./controllers/jogoController");
-const Genero = require("./models/Genero");
-const Plataforma = require("./models/Plataforma");
-const Jogo = require("./models/Jogo");
+const jogoController = require("../controllers/jogoController");
+const Genero = require("../models/Genero");
+const Plataforma = require("../models/Plataforma");
+const Jogo = require("../models/Jogo");
 
 // página inicial (Home)
 router.get("/", async (req, res) => {
