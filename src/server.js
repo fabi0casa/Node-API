@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const seedDatabase = require("./seed")
+const seedDatabase = require("./seed");
+const jogoRoutes = require("./routes/routes");
 
 dotenv.config();
 
@@ -27,6 +28,9 @@ app.set("views", "./src/views"); //renderizando projeto com ejs
 app.get("/", (req, res) =>{
 	res.send("minha api está no ar!");
 });
+
+//rota dos jogos
+app.use("/jogos", jogoRoutes);
 
 //rota para testar o .ejs
 app.get("/home", (req, res) => {
