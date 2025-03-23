@@ -10,7 +10,7 @@ const criarJogo = async (req, res) => {
 	}
 };
 
-const listarJogos = async (reqz res) => {
+const listarJogos = async (req, res) => {
 	try{
 		const jogos = await Jogo.find().populate("genero").populate("plataforma");
 		res.json(jogos);
