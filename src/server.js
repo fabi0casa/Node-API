@@ -19,9 +19,18 @@ mongoose
 	})
 	.catch((err) => console.error("erro ao conectar com o Mongo :( :", err))
 	
+	
+app.set("view engine", "ejs");
+app.set("views", "./src/views"); //renderizando projeto com ejs
+
 //rota de teste
 app.get("/", (req, res) =>{
 	res.send("minha api está no ar!");
+});
+
+//rota para testar o .ejs
+app.get("/home", (req, res) => {
+    res.render("index");
 });
 
 //iniciando o servidor
