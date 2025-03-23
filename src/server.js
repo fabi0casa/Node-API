@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
+const expressLayouts = require("express-ejs-layouts");
 const seedDatabase = require("./seed");
 const jogoRoutes = require("./routes/routes");
 
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended:true }));
 app.use(cors());
 app.use(methodOverride("_method"));
+app.use(expressLayouts);
+app.set("layout", "layout");
 
 //conectando ao mongoDB
 mongoose
