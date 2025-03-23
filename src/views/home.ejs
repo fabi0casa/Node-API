@@ -1,6 +1,7 @@
 <h2>Lista de Jogos</h2>
 <table border="1">
     <tr>
+		<th>Imagem</th>
         <th>Título</th>
         <th>Gênero</th>
         <th>Plataforma</th>
@@ -10,6 +11,13 @@
     </tr>
     <% jogos.forEach(jogo => { %>
     <tr>
+		<td>
+			<% if (jogo.imagem) { %> 
+				<img src="<%= jogo.imagem %>" alt="<%= jogo.titulo %>" width="100"> 
+			<% } else { %> 
+				<span>Sem imagem</span> 
+			<% } %>
+        </td>
         <td><%= jogo.titulo %></td>
         <td><%= jogo.genero.map(g => g.nome).join(", ") %></td>
         <td><%= jogo.plataforma.map(p => p.nome).join(", ") %></td>
