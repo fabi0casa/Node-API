@@ -4,9 +4,11 @@ const criarJogo = async (req, res) => {
 	try{
 		const { titulo, descricao, preco, genero, plataforma, estoque, imagem } = req.body;
 		const novoJogo = await Jogo.create({ titulo, descricao, preco, genero, plataforma, estoque, imagem });
-		res.status(201).json(novoJogo);
+		req.flash('success', 'Jogo criado com sucesso!');
+		res.redirect('/');
 	} catch (error) {
-		res.status(400).json({ erro: "Erro ao criar jogo", detalhes: error.message });
+		req.flash('error', 'Erro ao criar jogo: ' + error.message);
+		res.redirect('/jogos/add'); 
 	}
 };
 
@@ -15,25 +17,30 @@ const listarJogos = async (req, res) => {
 		const jogos = await Jogo.find().populate("genero").populate("plataforma");
 		res.json(jogos);
 	} catch (error) {
-		res.status(500).json({ erro: "Erro ao buscar jogos" });
+		req.flash('error', 'Erro ao buscar jogos');
+		res.redirect('/');
 	}
 };
 
 const atualizarJogo = async (req, res) => {
 	try{
 		const jogoAtualizado = await Jogo.findByIdAndUpdate(req.params.id, req.body, { new:true }).populate("genero").populate("plataforma");
-		res.json(jogoAtualizado);
+		req.flash('success', 'Jogo atualizado com sucesso!');
+		res.redirect('/');
 	} catch (error) {
-		res.status(400).json({ erro: "Erro ao atualizar o jogo" });
+		req.flash('error', 'Erro ao atualizar o jogo: ' + error.message);
+		res.redirect(`/jogos/edit/${req.params.id}`);
 	}
 };
 
 const deletarJogo = async (req, res) => {
 	try{
 		await Jogo.findByIdAndDelete(req.params.id);
-		res.json({ mensagem: "Jogo deletado com sucesso" });
+		req.flash('success', 'Jogo deletado com sucesso!');
+		res.redirect('/');
 	} catch (error) {
-		res.status(500).json({ erro: "Erro ao deletar o jogo" });
+		req.flash('error', 'Erro ao deletar o jogo');
+		res.redirect('/');
 	}
 };
 

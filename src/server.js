@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const expressLayouts = require("express-ejs-layouts");
+const session = require("express-session");
+const flash = require("connect-flash");
 const seedDatabase = require("./seed");
 const jogoRoutes = require("./routes/routes");
 
@@ -17,6 +19,15 @@ app.use(cors());
 app.use(methodOverride("_method"));
 app.use(expressLayouts);
 app.set("layout", "layout");
+
+//configurando express-session e connect-flash
+app.use(session({
+  secret: 'seuSegredoAqui',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(flash());
 
 //conectando ao mongoDB
 mongoose
