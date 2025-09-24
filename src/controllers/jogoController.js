@@ -56,14 +56,40 @@ const listarJogos = async (req, res) => {
 };
 
 const atualizarJogo = async (req, res) => {
-	try{
-		const jogoAtualizado = await Jogo.findByIdAndUpdate(req.params.id, req.body, { new:true }).populate("genero").populate("plataforma");
-		req.flash('success', 'Jogo atualizado com sucesso!');
-		res.redirect('/');
-	} catch (error) {
-		req.flash('error', 'Erro ao atualizar o jogo: ' + error.message);
-		res.redirect(`/jogos/edit/${req.params.id}`);
-	}
+    try {
+        const { titulo, descricao, preco, estoque, imagem } = req.body;
+
+        const jogo = await Jogo.findById(req.params.id);
+        if (!jogo) {
+            req.flash("error", "Jogo não encontrado!");
+            return res.redirect("/");
+        }
+
+        let imagemFinal = jogo.imagem; // começa com a imagem atual
+
+        if (req.file) {
+            // Se o usuário fez upload, prioriza ele
+            imagemFinal = "/uploads/" + req.file.filename;
+        } else if (imagem && imagem.trim() !== "") {
+            // Se ele colocou link novo, sobrescreve
+            imagemFinal = imagem;
+        }
+        // Se não mexer em nada, continua a imagem atual
+
+        jogo.titulo = titulo;
+        jogo.descricao = descricao;
+        jogo.preco = preco;
+        jogo.estoque = estoque;
+        jogo.imagem = imagemFinal;
+
+        await jogo.save();
+
+        req.flash("success", "Jogo atualizado com sucesso!");
+        res.redirect("/");
+    } catch (error) {
+        req.flash("error", "Erro ao atualizar o jogo: " + error.message);
+        res.redirect(`/jogos/edit/${req.params.id}`);
+    }
 };
 
 const deletarJogo = async (req, res) => {
