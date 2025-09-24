@@ -70,14 +70,14 @@ const upload = multer({
     },
 });
 
-// Rota GET (formulário)
+// pagina de adicionar
 router.get("/jogos/add", async (req, res) => {
     const generos = await Genero.find();
     const plataformas = await Plataforma.find();
     res.render("criar", { title: "Adicionar Jogo", generos, plataformas });
 });
 
-// Rota POST com tratamento de erro do multer (evita crash/silêncio)
+// (adicionar) Rota POST com tratamento de erro do multer (evita crash/silêncio)
 router.post(
     "/jogos/add",
     (req, res, next) => {
@@ -94,15 +94,14 @@ router.post(
     jogoController.criarJogo
 );
 
-module.exports = router;
-
-
 // página de edição
 router.get("/jogos/edit/:id", async (req, res) => {
     const jogo = await Jogo.findById(req.params.id);
     res.render("editar", { title: "Editar Jogo", jogo });
 });
-router.post("/jogos/update/:id", jogoController.atualizarJogo);
+
+// atualizar jogo (com upload)
+router.post("/jogos/update/:id", upload.single("upload"), jogoController.atualizarJogo);
 
 // página de deletar
 router.get("/jogos/delete/:id", async (req, res) => {
