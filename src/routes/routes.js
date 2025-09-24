@@ -7,8 +7,34 @@ const Jogo = require("../models/Jogo");
 
 // página inicial (Home)
 router.get("/", async (req, res) => {
-    const jogos = await Jogo.find().populate("genero").populate("plataforma");
-    res.render("home", { title: "Home", jogos });
+    try {
+        const page = parseInt(req.query.page) || 1;   // página atual
+        const limit = 5; // quantidade de jogos por página
+        const skip = (page - 1) * limit;
+
+        // total de jogos
+        const totalJogos = await Jogo.countDocuments();
+
+        // buscar somente os jogos da página atual
+        const jogos = await Jogo.find()
+            .populate("genero")
+            .populate("plataforma")
+            .skip(skip)
+            .limit(limit);
+
+        // total de páginas
+        const totalPages = Math.ceil(totalJogos / limit);
+
+        res.render("home", { 
+            title: "Home", 
+            jogos, 
+            currentPage: page, 
+            totalPages 
+        });
+    } catch (error) {
+        console.error(error);
+        res.redirect("/");
+    }
 });
 
 // Página de criar
