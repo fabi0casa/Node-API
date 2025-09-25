@@ -45,6 +45,7 @@ app.set("views", "./src/views");
 
 //servindo arquivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static("public/uploads"));
 
 //rotas
 app.use("/", jogoRoutes);
