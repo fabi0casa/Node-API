@@ -1,11 +1,21 @@
 const API_URL = "http://192.168.0.10:5000/api";
 
-export async function getJogos() {
-  const res = await fetch(`${API_URL}/jogos`);
+export async function getJogos(page = 1) {
+  const res = await fetch(`${API_URL}/jogos?page=${page}`);
   if (!res.ok) throw new Error("Erro ao buscar jogos");
   const data = await res.json();
-  // A API retorna { jogos: [...], totalPages, ... }
-  return data.jogos || []; // retorna só o array de jogos
+
+  // converte para objeto padrão
+  if (Array.isArray(data)) {
+    return {
+      currentPage: page,
+      totalPages: 1,
+      totalJogos: data.length,
+      jogos: data,
+    };
+  }
+
+  return data;
 }
 
 export async function addJogo(jogo: any) {

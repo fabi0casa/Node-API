@@ -21,19 +21,37 @@ import platformIcon from "@/assets/images/symbols/platform.png";
 export default function HomeScreen() {
   const [jogos, setJogos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalJogos, setTotalJogos] = useState(0);
+
   const { width } = useWindowDimensions();
+  const isMobile = width < 600;
 
   useEffect(() => {
-    carregarJogos();
-  }, []);
+    carregarJogos(page);
+  }, [page]);
 
-  const isMobile = width < 600; // define se é ou não é mobile
-
-  async function carregarJogos() {
+  async function carregarJogos(pagina: number) {
     try {
       setLoading(true);
-      const data = await getJogos();
-      setJogos(data);
+      const data = await getJogos(pagina);
+
+      let jogosArray: any[] = [];
+      let current = pagina;
+      let totalP = 1;
+      let totalJ = 0;
+
+      jogosArray = (data as any).jogos;
+      current = (data as any).currentPage ?? pagina;
+      totalP = (data as any).totalPages ?? 1;
+      totalJ = (data as any).totalJogos ?? jogosArray.length;
+
+      setJogos(jogosArray);
+      setPage(current);
+      setTotalPages(totalP);
+      setTotalJogos(totalJ);
+	  
     } catch (err) {
       console.error(err);
     } finally {
@@ -43,7 +61,16 @@ export default function HomeScreen() {
 
   async function handleDelete(id: string) {
     await deleteJogo(id);
-    await carregarJogos();
+    await carregarJogos(1);
+  }
+  
+  
+  function handleProximaPagina() {
+    if (page < totalPages) setPage(page + 1);
+  }
+
+  function handlePaginaAnterior() {
+    if (page > 1) setPage(page - 1);
   }
 
   if (loading) {
@@ -118,6 +145,32 @@ export default function HomeScreen() {
           </View>
         )}
       />
+	  
+	  	<View style={styles.paginationContainer}>
+          <TouchableOpacity
+            style={[styles.pageButton, page === 1 && styles.disabledButton]}
+            onPress={handlePaginaAnterior}
+            disabled={page === 1}
+          >
+            <Text style={styles.pageButtonText}>← Anterior</Text>
+          </TouchableOpacity>
+		  
+	      <Text style={styles.pageInfo}>
+            Página {page} de {totalPages} — Total de jogos: {totalJogos}
+          </Text>
+	   
+          <TouchableOpacity
+            style={[
+              styles.pageButton,
+              page === totalPages && styles.disabledButton,
+            ]}
+            onPress={handleProximaPagina}
+            disabled={page === totalPages}
+          >
+            <Text style={styles.pageButtonText}>Próxima →</Text>
+          </TouchableOpacity>
+        </View>
+	  
     </View>
   </>
   );
@@ -207,5 +260,21 @@ const styles = StyleSheet.create({
     height: 18,
     tintColor: "#fff", // aplica cor branca no ícone (opcional, se quiser manter coerência)
     alignSelf: "center",
+  },
+  paginationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    paddingHorizontal: 30,
+  },
+  pageButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  pageButtonText: { color: "#fff", fontWeight: "bold" },
+  disabledButton: {
+    backgroundColor: "#ccc",
   },
 });
