@@ -9,6 +9,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const seedDatabase = require("./seed");
 const jogoRoutes = require("./routes/routes");
+const rotasAPI = require("./routes/api_routes");
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use("/uploads", express.static("public/uploads"));
 
 //rotas
 app.use("/", jogoRoutes);
+app.use("/api", rotasAPI);
 
 // rota 404 - não encontrado
 app.use((req, res) => {
