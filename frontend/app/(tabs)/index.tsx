@@ -9,6 +9,9 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from "react-native";
+
+import Header from "@/components/Header";
+
 import { getJogos, deleteJogo } from "@/src/api";
 
 export default function HomeScreen() {
@@ -48,8 +51,10 @@ export default function HomeScreen() {
   }
 
   return (
+  <>
+    <Header />
     <View style={styles.container}>
-      <Text style={styles.title}>🎮 Lista de Jogos</Text>
+      <Text style={styles.title}>Lista de Jogos</Text>
 
       <FlatList
         data={jogos}
@@ -110,6 +115,7 @@ export default function HomeScreen() {
         )}
       />
     </View>
+  </>
   );
 }
 
