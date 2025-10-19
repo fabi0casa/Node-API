@@ -7,16 +7,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import { getJogos, deleteJogo } from "@/src/api";
 
 export default function HomeScreen() {
   const [jogos, setJogos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     carregarJogos();
   }, []);
+
+  const isMobile = width < 600; // define se é ou não é mobile
 
   async function carregarJogos() {
     try {
@@ -80,19 +84,27 @@ export default function HomeScreen() {
 			  <Text style={styles.estoque}>estoque: {item.estoque ?? 0}</Text>
 			</View>
 
-            <TouchableOpacity
-              style={styles.btnDelete}
-              onPress={() => handleDelete(item._id)}
+			{/* container dinâmico */}
+            <View
+              style={[
+                styles.btnContainer,
+                isMobile && { flexDirection: "column" }, // empilha no celular
+              ]}
             >
-              <Text style={{ color: "#fff", fontSize: 16 }}>🗑</Text>
-            </TouchableOpacity>	
-			
-			<TouchableOpacity
-              style={styles.btnEdit}
-              onPress={() => handleDelete(item._id)}
-            >
-              <Text style={{ color: "#fff", fontSize: 16 }}>✏️</Text>
-            </TouchableOpacity>	
+              <TouchableOpacity
+                style={styles.btnDelete}
+                onPress={() => handleDelete(item._id)}
+              >
+                <Text style={{ color: "#fff", fontSize: 16 }}>🗑</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.btnEdit, isMobile && { marginTop: 5 }]}
+                onPress={() => console.log("Editar", item._id)}
+              >
+                <Text style={{ color: "#fff", fontSize: 16 }}>✎</Text>
+              </TouchableOpacity>
+            </View>
 			
           </View>
         )}
@@ -144,12 +156,18 @@ const styles = StyleSheet.create({
     color: "#888",
     marginTop: 2,
   },
+   btnContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 5,
+  },
   btnDelete: {
     backgroundColor: "#CC0000",
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 8,
     marginLeft: 10,
+	width: 33,
   },
    btnEdit: {
     backgroundColor: "#0025D6",
@@ -157,6 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     marginLeft: 10,
+	width: 33,
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
