@@ -14,6 +14,10 @@ import Header from "@/components/Header";
 
 import { getJogos, deleteJogo } from "@/src/api";
 
+import trashIcon from "@/assets/images/symbols/trash.png";
+import editIcon from "@/assets/images/symbols/edit.png";
+import platformIcon from "@/assets/images/symbols/platform.png";
+
 export default function HomeScreen() {
   const [jogos, setJogos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,9 +79,12 @@ export default function HomeScreen() {
               </Text>
 
               {/* plataforma */}
-              <Text style={styles.info}>
-                🕹 {item.plataforma?.map((p: any) => p.nome).join(", ") || "—"}
-              </Text>
+			  <View style={styles.infoRow}>
+			    <Image source={platformIcon} style={styles.iconSmall} />
+			    <Text style={styles.infoText}>
+				  {item.plataforma?.map((p: any) => p.nome).join(", ") || "—"}
+			    </Text>
+			  </View>
 
             </View>
 			  
@@ -96,19 +103,16 @@ export default function HomeScreen() {
                 isMobile && { flexDirection: "column" }, // empilha no celular
               ]}
             >
-              <TouchableOpacity
-                style={styles.btnDelete}
-                onPress={() => handleDelete(item._id)}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>🗑</Text>
-              </TouchableOpacity>
+             <TouchableOpacity style={styles.btnDelete} onPress={() => handleDelete(item._id)}>
+			   <Image source={trashIcon} style={styles.iconButton} />
+			 </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.btnEdit, isMobile && { marginTop: 5 }]}
-                onPress={() => console.log("Editar", item._id)}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>✎</Text>
-              </TouchableOpacity>
+			 <TouchableOpacity
+			    style={[styles.btnEdit, isMobile && { marginTop: 5 }]}
+			    onPress={() => console.log("Editar", item._id)}
+			 >
+			   <Image source={editIcon} style={styles.iconButton} />
+			 </TouchableOpacity>
             </View>
 			
           </View>
@@ -184,4 +188,24 @@ const styles = StyleSheet.create({
 	width: 33,
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  iconSmall: {
+    width: 14,
+    height: 14,
+    marginRight: 5,
+  },
+  infoText: {
+    fontSize: 12,
+    color: "#555",
+  },
+  iconButton: {
+    width: 18,
+    height: 18,
+    tintColor: "#fff", // aplica cor branca no ícone (opcional, se quiser manter coerência)
+    alignSelf: "center",
+  },
 });
