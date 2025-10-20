@@ -76,9 +76,9 @@ router.get("/jogos/add-data", async (req, res) => {
     }
 });
 
-// [POST] /api/jogos — cria um novo jogo
+// [POST] /api/jogos/add — cria um novo jogo
 router.post(
-    "/jogos",
+    "/jogos/add",
     (req, res, next) => {
         upload.single("upload")(req, res, (err) => {
             if (err) {
@@ -115,8 +115,8 @@ router.get("/jogos/:id", async (req, res) => {
     }
 });
 
-// [PUT] /api/jogos/:id — atualiza um jogo (com upload opcional)
-router.put("/jogos/:id", upload.single("upload"), async (req, res) => {
+// [PUT] /api/jogos/edit/:id — atualiza um jogo (com upload opcional)
+router.put("/jogos/edit/:id", upload.single("upload"), async (req, res) => {
     try {
         const jogoAtualizado = await jogoController.atualizarJogo(req, res, true);
         if (!res.headersSent) res.json(jogoAtualizado);
@@ -125,8 +125,8 @@ router.put("/jogos/:id", upload.single("upload"), async (req, res) => {
     }
 });
 
-// [DELETE] /api/jogos/:id — deleta um jogo
-router.delete("/jogos/:id", async (req, res) => {
+// [DELETE] /api/jogos/delete/:id — deleta um jogo
+router.delete("/jogos/delete/:id", async (req, res) => {
     try {
         const jogo = await Jogo.findById(req.params.id);
         if (!jogo) return res.status(404).json({ error: "Jogo não encontrado" });
