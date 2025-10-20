@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import Header from "@/components/Header";
+import ImagePopup from "@/components/ImagePopup";
 
 import { getJogos, deleteJogo } from "@/src/api";
 
@@ -72,6 +73,14 @@ export default function HomeScreen() {
   function handlePaginaAnterior() {
     if (page > 1) setPage(page - 1);
   }
+  
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  function handleImagePress(url: string) {
+    setSelectedImage(url);
+    setPopupVisible(true);
+  }
 
   if (loading) {
     return (
@@ -92,10 +101,12 @@ export default function HomeScreen() {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image
-              source={{ uri: item.imagem || "https://via.placeholder.com/100" }}
-              style={styles.image}
-            />
+           <TouchableOpacity onPress={() => handleImagePress(item.imagem)}>
+              <Image
+                source={{ uri: item.imagem || "https://via.placeholder.com/100" }}
+                style={styles.image}
+              />
+            </TouchableOpacity>
 
             <View style={{ flex: 1 }}>
               <Text style={styles.nome}>{item.titulo}</Text>
@@ -155,9 +166,16 @@ export default function HomeScreen() {
             <Text style={styles.pageButtonText}>← Anterior</Text>
           </TouchableOpacity>
 		  
-	      <Text style={styles.pageInfo}>
-            Página {page} de {totalPages} — Total de jogos: {totalJogos}
-          </Text>
+			<Text
+			  style={[
+				styles.pageInfo,
+				isMobile && { fontSize: 12, textAlign: "center" },
+			  ]}
+			> 
+			  {isMobile
+				? `${page} de ${totalPages}`
+				: `Página ${page} de ${totalPages} — Total de jogos: ${totalJogos}`}
+			</Text>
 	   
           <TouchableOpacity
             style={[
@@ -172,6 +190,13 @@ export default function HomeScreen() {
         </View>
 	  
     </View>
+	
+	<ImagePopup
+      visible={popupVisible}
+      imageUrl={selectedImage}
+      onClose={() => setPopupVisible(false)}
+    />
+	
   </>
   );
 }
@@ -258,7 +283,7 @@ const styles = StyleSheet.create({
   iconButton: {
     width: 18,
     height: 18,
-    tintColor: "#fff", // aplica cor branca no ícone (opcional, se quiser manter coerência)
+    tintColor: "#fff",
     alignSelf: "center",
   },
   paginationContainer: {
@@ -268,7 +293,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   pageButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#4400FF",
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -276,5 +301,21 @@ const styles = StyleSheet.create({
   pageButtonText: { color: "#fff", fontWeight: "bold" },
   disabledButton: {
     backgroundColor: "#ccc",
+  },
+  pageInfo: {
+    fontSize: 14,
+    color: "#333",
+    fontWeight: "500",
+    alignSelf: "center",
+    textAlign: "center",
+    backgroundColor: "#fff",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
 });
