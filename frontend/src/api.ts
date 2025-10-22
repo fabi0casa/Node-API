@@ -1,4 +1,5 @@
-const API_URL = "http://192.168.0.10:5000/api";
+export const API_URL = "http://192.168.0.10:5000/api";
+export const STATIC_URL = "http://192.168.0.10:5000"
 
 export async function getJogos(page = 1) {
   const res = await fetch(`${API_URL}/jogos?page=${page}`);
@@ -18,13 +19,26 @@ export async function getJogos(page = 1) {
   return data;
 }
 
-export async function addJogo(jogo: any) {
+// Buscar gêneros e plataformas
+export async function getAddData() {
+  const res = await fetch(`${API_URL}/jogos/add-data`);
+  if (!res.ok) throw new Error("Erro ao buscar dados de cadastro");
+  return res.json();
+}
+
+// Enviar novo jogo com imagem (FormData)
+export async function uploadJogo(formData: FormData) {
   const res = await fetch(`${API_URL}/jogos/add`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(jogo),
+    body: formData,
+    headers: { Accept: "application/json" },
   });
-  if (!res.ok) throw new Error("Erro ao adicionar jogo");
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Erro HTTP: ${res.status} - ${errText}`);
+  }
+
   return res.json();
 }
 

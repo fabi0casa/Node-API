@@ -9,6 +9,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 
+import { STATIC_URL } from "@/src/api";
+
 interface ImagePopupProps {
   visible: boolean;
   imageUrl: string | null;
@@ -39,7 +41,11 @@ export default function ImagePopup({ visible, imageUrl, onClose }: ImagePopupPro
 
           {imageUrl ? (
             <Image
-              source={{ uri: imageUrl }}
+              source={{
+		   	    uri: imageUrl?.startsWith("/uploads/")
+				  ? `${STATIC_URL}${imageUrl}`
+				  : imageUrl,
+			  }}
               style={styles.image}
               resizeMode="contain"
             />

@@ -90,7 +90,6 @@ router.post(
     async (req, res) => {
         try {
             const jogo = await jogoController.criarJogo(req, res, true); // true = modo API
-            // o controller pode ser adaptado para retornar JSON
             if (!res.headersSent) res.status(201).json(jogo);
         } catch (error) {
             res.status(500).json({ error: "Erro ao criar jogo" });

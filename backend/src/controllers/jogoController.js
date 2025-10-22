@@ -1,48 +1,62 @@
 const Jogo = require("../models/Jogo");
 
-const criarJogo = async (req, res) => {
-    try {
-        // campos vindos do body (notar que com multipart/form-data, multer já preenche req.body)
-        const { titulo, descricao } = req.body;
+const criarJogo = async (req, res, isApiOrNext = false) => {
+  const isApi = typeof isApiOrNext === "boolean" ? isApiOrNext : false;
+  try {
+    const { titulo, descricao } = req.body;
 
-        // normaliza preço e estoque
-        let preco = req.body.preco;
-        let estoque = req.body.estoque;
-        preco = preco ? parseFloat(preco) : 0;
-        estoque = estoque ? parseInt(estoque, 10) : 0;
+    let preco = req.body.preco ? parseFloat(req.body.preco) : 0;
+    let estoque = req.body.estoque ? parseInt(req.body.estoque, 10) : 0;
 
-        // normaliza generos/plataformas (podem ser string ou array)
-        let genero = req.body.genero;
-        let plataforma = req.body.plataforma;
-        if (genero && !Array.isArray(genero)) genero = [genero];
-        if (plataforma && !Array.isArray(plataforma)) plataforma = [plataforma];
+    let genero = req.body.genero;
+    let plataforma = req.body.plataforma;
+    if (genero && !Array.isArray(genero)) genero = [genero];
+    if (plataforma && !Array.isArray(plataforma)) plataforma = [plataforma];
 
-        // decide a imagem final: se tiver arquivo enviado -> /uploads/..., caso contrário usa a URL (se houver)
-        let imagemFinal = req.body.imagem && req.body.imagem.trim() !== "" ? req.body.imagem.trim() : null;
-        if (req.file) {
-            imagemFinal = "/uploads/" + req.file.filename;
-        }
-
-        // cria e salva o jogo
-        const novoJogo = new Jogo({
-            titulo,
-            descricao,
-            preco,
-            genero,
-            plataforma,
-            estoque,
-            imagem: imagemFinal,
-        });
-
-        await novoJogo.save();
-
-        req.flash("success", "Jogo criado com sucesso!");
-        return res.redirect("/");
-    } catch (error) {
-        // envia a mensagem de erro como flash e volta ao form
-        req.flash("error", "Erro ao criar jogo: " + (error.message || "Erro desconhecido"));
-        return res.redirect("/jogos/add");
+    // imagem enviada via upload (req.file) ou URL (req.body.imagemUrl)
+    let imagemFinal = null;
+    if (req.file) {
+      imagemFinal = "/uploads/" + req.file.filename;
+    } else if (req.body.imagemUrl && req.body.imagemUrl.trim() !== "") {
+      imagemFinal = req.body.imagemUrl.trim();
     }
+
+    const novoJogo = new Jogo({
+      titulo,
+      descricao,
+      preco,
+      estoque,
+      genero,
+      plataforma,
+      imagem: imagemFinal,
+    });
+
+    await novoJogo.save();
+
+    if (isApi) {
+      // Modo API — responde JSON
+      return res.status(201).json({
+        message: "Jogo criado com sucesso",
+        jogo: novoJogo,
+      });
+    } else {
+      // Modo web tradicional (ejs)
+      req.flash("success", "Jogo criado com sucesso!");
+      return res.redirect("/");
+    }
+  } catch (error) {
+    console.error("Erro ao criar jogo:", error);
+
+    if (isApi) {
+      return res.status(500).json({
+        error: "Erro ao criar jogo",
+        details: error.message,
+      });
+    } else {
+      req.flash("error", "Erro ao criar jogo: " + (error.message || "Erro desconhecido"));
+      return res.redirect("/jogos/add");
+    }
+  }
 };
 
 const listarJogos = async (req, res) => {

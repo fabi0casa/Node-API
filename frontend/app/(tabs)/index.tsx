@@ -12,6 +12,7 @@ import {
 
 import Header from "@/components/Header";
 import ImagePopup from "@/components/ImagePopup";
+import { STATIC_URL } from "@/src/api";
 
 import { getJogos, deleteJogo } from "@/src/api";
 
@@ -101,12 +102,17 @@ export default function HomeScreen() {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-           <TouchableOpacity onPress={() => handleImagePress(item.imagem)}>
-              <Image
-                source={{ uri: item.imagem || "https://via.placeholder.com/100" }}
-                style={styles.image}
-              />
-            </TouchableOpacity>
+		  
+		  <TouchableOpacity onPress={() => handleImagePress(item.imagem)}>
+		    <Image
+			  source={{
+		   	    uri: item.imagem?.startsWith("/uploads/")
+				  ? `${STATIC_URL}${item.imagem}`
+				  : item.imagem || "https://via.placeholder.com/100",
+			  }}
+			  style={styles.image}
+		    />
+		  </TouchableOpacity>
 
             <View style={{ flex: 1 }}>
               <Text style={styles.nome}>{item.titulo}</Text>
