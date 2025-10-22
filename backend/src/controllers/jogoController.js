@@ -106,15 +106,32 @@ const atualizarJogo = async (req, res) => {
     }
 };
 
-const deletarJogo = async (req, res) => {
-	try{
-		await Jogo.findByIdAndDelete(req.params.id);
-		req.flash('success', 'Jogo deletado com sucesso!');
-		res.redirect('/');
-	} catch (error) {
-		req.flash('error', 'Erro ao deletar o jogo');
-		res.redirect('/');
-	}
+const deletarJogo = async (req, res, isApiOrNext = false) => {
+  const isApi = typeof isApiOrNext === "boolean" ? isApiOrNext : false;
+
+  try {
+    await Jogo.findByIdAndDelete(req.params.id);
+
+    if (isApi) {
+      return res.json({ success: true, message: "Jogo deletado com sucesso!" });
+    } else {
+      req.flash("success", "Jogo deletado com sucesso!");
+      return res.redirect("/");
+    }
+  } catch (error) {
+    console.error(error);
+
+    if (isApi) {
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao deletar o jogo",
+        error: error.message,
+      });
+    } else {
+      req.flash("error", "Erro ao deletar o jogo");
+      return res.redirect("/");
+    }
+  }
 };
 
 module.exports = { criarJogo, listarJogos, atualizarJogo, deletarJogo };

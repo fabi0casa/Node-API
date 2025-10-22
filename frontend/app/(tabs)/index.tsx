@@ -12,6 +12,7 @@ import {
 
 import Header from "@/components/Header";
 import ImagePopup from "@/components/ImagePopup";
+import ConfirmModal from "@/components/ConfirmModal";
 import { STATIC_URL } from "@/src/api";
 
 import { getJogos, deleteJogo } from "@/src/api";
@@ -61,11 +62,10 @@ export default function HomeScreen() {
     }
   }
 
-  async function handleDelete(id: string) {
-    await deleteJogo(id);
-    await carregarJogos(1);
-  }
-  
+ // async function handleDelete(id: string) {
+ //   await deleteJogo(id);
+ //   await carregarJogos(1);
+ // }
   
   function handleProximaPagina() {
     if (page < totalPages) setPage(page + 1);
@@ -81,6 +81,23 @@ export default function HomeScreen() {
   function handleImagePress(url: string) {
     setSelectedImage(url);
     setPopupVisible(true);
+  }
+  
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [jogoSelecionado, setJogoSelecionado] = useState<{ id: string; titulo: string } | null>(null);
+  
+  async function handleConfirmDelete() {
+    if (jogoSelecionado) {
+      await deleteJogo(jogoSelecionado.id);
+      await carregarJogos(1);
+      setConfirmVisible(false);
+      setJogoSelecionado(null);
+    }
+  }
+
+  function abrirModalDeConfirmacao(id: string, titulo: string) {
+    setJogoSelecionado({ id, titulo });
+    setConfirmVisible(true);
   }
 
   if (loading) {
@@ -147,9 +164,14 @@ export default function HomeScreen() {
                 isMobile && { flexDirection: "column" }, // empilha no celular
               ]}
             >
-             <TouchableOpacity style={styles.btnDelete} onPress={() => handleDelete(item._id)}>
-			   <Image source={trashIcon} style={styles.iconButton} />
-			 </TouchableOpacity>
+			
+			<TouchableOpacity
+			  style={styles.btnDelete}
+			  onPress={() => abrirModalDeConfirmacao(item._id, item.titulo)}
+			>
+			  <Image source={trashIcon} style={styles.iconButton} />
+			</TouchableOpacity>
+
 
 			 <TouchableOpacity
 			    style={[styles.btnEdit, isMobile && { marginTop: 5 }]}
@@ -202,6 +224,13 @@ export default function HomeScreen() {
       imageUrl={selectedImage}
       onClose={() => setPopupVisible(false)}
     />
+	
+	<ConfirmModal
+	  visible={confirmVisible}
+	  jogoNome={jogoSelecionado?.titulo}
+	  onConfirm={handleConfirmDelete}
+	  onCancel={() => setConfirmVisible(false)}
+	/>
 	
   </>
   );
