@@ -1,0 +1,51 @@
+<h2>Lista de Jogos</h2>
+<table border="1">
+    <tr>
+        <th>Imagem</th>
+        <th>Título</th>
+        <th>Gênero</th>
+        <th>Plataforma</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Ações</th>
+    </tr>
+    <% jogos.forEach(jogo => { %>
+    <tr>
+        <td>
+            <% if (jogo.imagem) { %> 
+                <img src="<%= jogo.imagem %>" alt="<%= jogo.titulo %>" width="100"> 
+            <% } else { %> 
+                <span>Sem imagem</span> 
+            <% } %>
+        </td>
+        <td><%= jogo.titulo %></td>
+        <td><%= jogo.genero.map(g => g.nome).join(", ") %></td>
+        <td><%= jogo.plataforma.map(p => p.nome).join(", ") %></td>
+        <td>R$ <%= jogo.preco.toFixed(2) %></td>
+        <td><%= jogo.estoque %></td>
+        <td>
+            <a href="/jogos/edit/<%= jogo._id %>">✏️ Editar</a>
+            <a href="/jogos/delete/<%= jogo._id %>">🗑️ Deletar</a>
+        </td>
+    </tr>
+    <% }) %>
+</table>
+
+<!-- Paginação -->
+<div style="margin-top:20px;">
+    <% if (currentPage > 1) { %>
+        <a href="/?page=<%= currentPage - 1 %>">⬅️ Anterior</a>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === currentPage) { %>
+            <strong>[<%= i %>]</strong>
+        <% } else { %>
+            <a href="/?page=<%= i %>"><%= i %></a>
+        <% } %>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+        <a href="/?page=<%= currentPage + 1 %>">Próxima ➡️</a>
+    <% } %>
+</div>

@@ -1,0 +1,6 @@
+# variáveis de ambiente
+.env
+
+# pasta com imagens do banco de dados
+/src/public/uploads/*
+!/src/public/uploads/.gitkeep
