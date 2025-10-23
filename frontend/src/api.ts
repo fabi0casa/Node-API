@@ -42,8 +42,33 @@ export async function uploadJogo(formData: FormData) {
   return res.json();
 }
 
+//Deleta um jogo
 export async function deleteJogo(id: string) {
   const res = await fetch(`${API_URL}/jogos/delete/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Erro ao deletar jogo");
   return res.json();
 }
+
+// Buscar um jogo pelo ID
+export async function getJogoById(id: string) {
+  const res = await fetch(`${API_URL}/jogos/${id}`);
+  if (!res.ok) throw new Error("Erro ao buscar jogo");
+  return res.json();
+}
+
+// Atualizar jogo existente
+export async function updateJogo(id: string, formData: FormData) {
+  const res = await fetch(`${API_URL}/jogos/edit/${id}`, {
+    method: "PUT",
+    body: formData,
+    headers: { Accept: "application/json" },
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Erro HTTP: ${res.status} - ${errText}`);
+  }
+
+  return res.json();
+}
+

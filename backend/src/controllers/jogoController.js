@@ -69,41 +69,59 @@ const listarJogos = async (req, res) => {
 	}
 };
 
-const atualizarJogo = async (req, res) => {
-    try {
-        const { titulo, descricao, preco, estoque, imagem } = req.body;
+const atualizarJogo = async (req, res, isApiOrNext = false) => {
+  const isApi = typeof isApiOrNext === "boolean" ? isApiOrNext : false;
 
-        const jogo = await Jogo.findById(req.params.id);
-        if (!jogo) {
-            req.flash("error", "Jogo não encontrado!");
-            return res.redirect("/");
-        }
+  try {
+    const { titulo, descricao, preco, estoque, imagem } = req.body;
 
-        let imagemFinal = jogo.imagem; // começa com a imagem atual
-
-        if (req.file) {
-            // Se o usuário fez upload, prioriza ele
-            imagemFinal = "/uploads/" + req.file.filename;
-        } else if (imagem && imagem.trim() !== "") {
-            // Se ele colocou link novo, sobrescreve
-            imagemFinal = imagem;
-        }
-        // Se não mexer em nada, continua a imagem atual
-
-        jogo.titulo = titulo;
-        jogo.descricao = descricao;
-        jogo.preco = preco;
-        jogo.estoque = estoque;
-        jogo.imagem = imagemFinal;
-
-        await jogo.save();
-
-        req.flash("success", "Jogo atualizado com sucesso!");
-        res.redirect("/");
-    } catch (error) {
-        req.flash("error", "Erro ao atualizar o jogo: " + error.message);
-        res.redirect(`/jogos/edit/${req.params.id}`);
+    const jogo = await Jogo.findById(req.params.id);
+    if (!jogo) {
+      if (isApi) {
+        return res.status(404).json({ success: false, message: "Jogo não encontrado!" });
+      }
+      req.flash("error", "Jogo não encontrado!");
+      return res.redirect("/");
     }
+
+    let imagemFinal = jogo.imagem; // começa com a imagem atual
+
+    if (req.file) {
+      imagemFinal = "/uploads/" + req.file.filename;
+    } else if (imagem && imagem.trim() !== "") {
+      imagemFinal = imagem;
+    }
+
+    jogo.titulo = titulo;
+    jogo.descricao = descricao;
+    jogo.preco = preco;
+    jogo.estoque = estoque;
+    jogo.imagem = imagemFinal;
+
+    await jogo.save();
+
+    if (isApi) {
+      return res.json({
+        success: true,
+        message: "Jogo atualizado com sucesso!",
+        jogo,
+      });
+    }
+
+    req.flash("success", "Jogo atualizado com sucesso!");
+    res.redirect("/");
+  } catch (error) {
+    if (isApi) {
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao atualizar o jogo",
+        error: error.message,
+      });
+    }
+
+    req.flash("error", "Erro ao atualizar o jogo: " + error.message);
+    res.redirect(`/jogos/edit/${req.params.id}`);
+  }
 };
 
 const deletarJogo = async (req, res, isApiOrNext = false) => {

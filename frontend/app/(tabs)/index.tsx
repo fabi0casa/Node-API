@@ -13,6 +13,7 @@ import {
 import Header from "@/components/Header";
 import ImagePopup from "@/components/ImagePopup";
 import ConfirmModal from "@/components/ConfirmModal";
+import EditGameModal from "@/components/EditGameModal";
 import { STATIC_URL } from "@/src/api";
 
 import { getJogos, deleteJogo } from "@/src/api";
@@ -93,6 +94,14 @@ export default function HomeScreen() {
       setConfirmVisible(false);
       setJogoSelecionado(null);
     }
+  }
+  
+  const [editVisible, setEditVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  function handleEditar(id: string) {
+    setSelectedId(id);
+    setEditVisible(true);
   }
 
   function abrirModalDeConfirmacao(id: string, titulo: string) {
@@ -175,7 +184,7 @@ export default function HomeScreen() {
 
 			 <TouchableOpacity
 			    style={[styles.btnEdit, isMobile && { marginTop: 5 }]}
-			    onPress={() => console.log("Editar", item._id)}
+			    onPress={() => handleEditar(item._id)}
 			 >
 			   <Image source={editIcon} style={styles.iconButton} />
 			 </TouchableOpacity>
@@ -231,6 +240,13 @@ export default function HomeScreen() {
 	  onConfirm={handleConfirmDelete}
 	  onCancel={() => setConfirmVisible(false)}
 	/>
+	
+	<EditGameModal
+	  visible={editVisible}
+	  jogoId={selectedId}
+	  onClose={() => setEditVisible(false)}
+	  onUpdated={carregarJogos}
+	/>	
 	
   </>
   );

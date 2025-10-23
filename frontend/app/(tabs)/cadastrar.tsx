@@ -15,7 +15,6 @@ import Header from "@/components/Header";
 import { API_URL } from "@/src/api";
 import { getAddData, uploadJogo } from "@/src/api";
 import { Platform } from "react-native";
-//import * as FileSystem from "expo-file-system";
 
 export default function CadastrarJogo() {
   const [titulo, setTitulo] = useState("");
