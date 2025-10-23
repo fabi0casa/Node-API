@@ -140,8 +140,8 @@ export default function EditGameModal({
       formData.append("descricao", descricao);
       formData.append("preco", preco);
       formData.append("estoque", estoque);
-      formData.append("genero", selectedGenero);
-      formData.append("plataforma", selectedPlataforma);
+      formData.append("genero[]", selectedGenero);
+      formData.append("plataforma[]", selectedPlataforma);
 
       if (upload && upload.uri && Platform.OS !== "web") {
         const fileExt = upload.uri.split(".").pop() || "jpg";

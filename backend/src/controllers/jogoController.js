@@ -97,6 +97,15 @@ const atualizarJogo = async (req, res, isApiOrNext = false) => {
     jogo.preco = preco;
     jogo.estoque = estoque;
     jogo.imagem = imagemFinal;
+	
+	let genero = req.body["genero[]"] || req.body.genero;
+	let plataforma = req.body["plataforma[]"] || req.body.plataforma;
+
+	if (genero && !Array.isArray(genero)) genero = [genero];
+	if (plataforma && !Array.isArray(plataforma)) plataforma = [plataforma];
+
+	jogo.genero = genero;
+	jogo.plataforma = plataforma;
 
     await jogo.save();
 
