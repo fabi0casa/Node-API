@@ -20,14 +20,15 @@ ele é apenas um experimento pessoal para explorar a stack e entender melhor sua
 - **Express:** Framework web para Node.js.
 - **MongoDB:** Banco de dados NoSQL para armazenar informações sobre os jogos.
 - **EJS (Embedded JavaScript):** Motor de template para renderizar HTML no servidor.
+- **React Native:** Tecnologia de Front-end usada para web e mobile simultaneamente.
 
 ## Como rodar o Projeto?
 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/loja-de-jogos.git
-cd loja-de-jogos
+git clone https://github.com/fabi0casa/Node-API.git
+cd Node-API
 ```
 
 ### 2. Instale as dependências
@@ -40,7 +41,7 @@ npm install
 ### 3. Configuração do MongoDB
 Certifique-se de ter uma instância do MongoDB em execução ou configure uma conexão com o MongoDB Atlas (cloud).
 
-Crie um arquivo chamado `.env` na raiz do projeto e adicione a variável de ambiente `MONGODB_URI`
+Crie um arquivo chamado `.env` na pasta 'backend' do projeto e adicione a variável de ambiente `MONGODB_URI`
 
 da seguinte maneira:
 ```.env
@@ -48,15 +49,24 @@ MONGODB_URI=<SeuLinkDeConexaoAoBanco>
 ```
 
 ### 4. Execute o Projeto
-Abra um terminal na raiz do projeto e insira o comando:
+Abra um terminal na pasta 'backend' do projeto e insira o comando:
 ```bash
 npm run dev
 ```
+O servidor iniciará por padrão na porta 5000, acessível em: localhost:5000
 
-## Aprimoramentos Futuros
+### 5. Rode o Front-end React Native
+Abra um terminal na pasta 'frontend' e insira o comando:
+```bash
+npx expo start
+```
 
-Embora este projeto esteja funcional em sua forma atual, há várias melhorias planejadas para o futuro:
+O servidor do Expo será iniciado na porta 8081 por padrão.
 
-- **Integração com React:** A principal melhoria será a adição do React para o frontend.
-- **Otimização de mensagens:** Atualmente o sistema não exibe mensagens de erro ou de sucesso no front-end, por mais que tenha havido uma tentativa.
-- **Aprimoramento na UI/UX:** Melhorias no design da interface para uma experiência de usuário mais fluida e intuitiva.
+Para rodar no celular:
+
+1. Instale o aplicativo Expo Go na Google Play ou App Store.
+
+2. Certifique-se de que seu celular e computador estejam na mesma rede Wi-Fi.
+
+3. Abra o Expo Go e escaneie o QR Code mostrado no terminal.
