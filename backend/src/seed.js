@@ -8,8 +8,56 @@ dotenv.config();
 const seedDatabase = async () => {
 	try{
 		//criando lista enumerada de generos e plataformas
-		const generos = ["Ação", "RPG", "Estratégia", "Esportes"];
-		const plataformas = ["PC", "Playstation 4", "Xbox 360", "Nintendo GameCube"];
+		const generos = [
+		  "Ação",
+		  "Aventura",
+		  "RPG",
+		  "Estratégia",
+		  "Esportes",
+		  "Simulação",
+		  "Corrida",
+		  "Terror",
+		  "Puzzle",
+		  "Plataforma",
+		  "Tiro em Primeira Pessoa (FPS)",
+		  "Tiro em Terceira Pessoa (TPS)",
+		  "Mundo Aberto",
+		  "Luta",
+		  "Sobrevivência",
+		  "Battle Royale",
+		  "Hack and Slash",
+		  "Stealth (Furtividade)",
+		  "Musical / Ritmo",
+		  "Visual Novel"
+		];
+
+		const plataformas = [
+		  "PC",
+		  "PlayStation 2",
+		  "PlayStation 3",
+		  "PlayStation 4",
+		  "PlayStation 5",
+		  "Xbox",
+		  "Xbox 360",
+		  "Xbox One",
+		  "Xbox Series X/S",
+		  "Nintendo GameCube",
+		  "Nintendo Wii",
+		  "Nintendo Wii U",
+		  "Nintendo Switch",
+		  "NES",
+		  "SNES",
+		  "Gameboy",
+		  "Nintendo 64",
+		  "Nintendo DS",
+		  "Nintendo 3DS",
+		  "PSP",
+		  "PlayStation Vita",
+		  "Sega Dreamcast",
+		  "Atari",
+		  "Mobile (Android/iOS)",
+		  "Flash"
+		];
 		
 		//insere os generos no banco, apenas caso eles não existam ainda
 		for (const nome of generos){
