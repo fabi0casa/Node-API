@@ -4,3 +4,6 @@
 # pasta com imagens do banco de dados
 /src/public/uploads/*
 !/src/public/uploads/.gitkeep
+
+# Node Modules
+/node_modules
